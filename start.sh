@@ -35,7 +35,7 @@ fi
 user=$1
 location=${user}@${host}
 
-big_message "ESTABLISHING_CONNECTION" >&2
+big_message "ESTABLISHING CONNECTION" >&2
 ssh -fMN -S "${control_socket}" "${location}"
 
 big_message "GETTING SERVER INFORMATION" >&2

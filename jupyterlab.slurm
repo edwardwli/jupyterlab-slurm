@@ -8,8 +8,7 @@
 #SBATCH --gpus=a40:1
 #SBATCH --output=/home/%u/slurmlogs/%x.log
 
-eval "$(conda shell.bash hook)"
-conda activate ml
+env=ml
+port=8890
 
-cd
-jupyter lab --no-browser --ip=0.0.0.0
+micromamba run --name "${env}" jupyter lab --no-browser --ip 0.0.0.0 --port "${port}"
