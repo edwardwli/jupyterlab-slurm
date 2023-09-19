@@ -22,8 +22,7 @@ then
   exit 1
 fi
 
-job=$(sbatch "$1" | sed -n 's/Submitted batch job \([[:digit:]]*\)/\1/p')
-echo "job = ${job}"
+job=$1
 
 while [ -z "$(get_info | get_node)" ]
 do
