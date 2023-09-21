@@ -1,6 +1,6 @@
 #!/bin/bash
-
-#SBATCH --gpus=a40:4
+#
+#SBATCH --gres=gpu:3
 #SBATCH --job-name=jupyterlab
 #SBATCH --mail-type=NONE
 #SBATCH --mem=64GB
@@ -12,4 +12,7 @@
 env=ml
 port=8890
 
-micromamba run --name "${env}" jupyter lab --no-browser --ip 0.0.0.0 --port "${port}"
+eval "$(micromamba shell hook --shell bash)"
+
+micromamba activate ml
+python -Xfrozen_modules=off -m jupyterlab_server --no-browser --ip 0.0.0.0 --port "${port}"

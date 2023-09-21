@@ -43,22 +43,24 @@ then
 fi
 
 big_message "STARTING SERVER" >&2
-sbatch_msg=$(ssh -S "${control_socket}" "${location}" sbatch < "${slurm_script}")
+job=$(ssh -S "${control_socket}" "${location}" sbatch --parsable < "${slurm_script}")
 
 big_message "GETTING SERVER INFORMATION" >&2
-job=$(echo "${sbatch_msg}" | grep -F "Submitted batch job" | sed -n 's/Submitted batch job \([[:digit:]]*\)/\1/p')
 start_log=$(ssh -S "${control_socket}" "${location}" "sh -s" < "${start_script}" "${job}")
 node=$(echo "${start_log}" | grep -F "node =" | sed -n 's/node = \(.*\)/\1/p')
 port=$(echo "${start_log}" | grep -F "port =" | sed -n 's/port = \(.*\)/\1/p')
-log=$(echo "${start_log}" | grep _F "log =" | sed -n 's/log = \(.*\)/\1/p')
+log=$(echo "${start_log}" | grep -F "log =" | sed -n 's/log = \(.*\)/\1/p')
 
 big_message "JOBID = ${job}\n\nGO TO http://localhost:${port}\n\nENTER Ctrl-c TO STOP" >&2
 
 big_message "PORT FORWARDING" >&2
-ssh -N -S "${control_socket}" -L "${port}:${node}:${port}" "${location}"
+ssh -S "${control_socket}" -L "${port}:${node}:${port}" "${location}" tail -f "${log}"
 
 big_message "STOPPING SERVER"
 ssh -S "${control_socket}" "${location}" scancel "${job}"
 
-big_message "SEVERING CONNECTION"
-ssh -S "${control_socket}" -O exit "${location}"
+if [ -n "${master}" ]
+then
+  big_message "SEVERING CONNECTION"
+  ssh -S "${control_socket}" -O exit "${location}"
+fi

@@ -9,7 +9,7 @@ get_info() {
 }
 
 get_node() {
-  sed -n 's/.* NodeList=\(.*\)/\1/p'
+  sed -n 's/.* NodeList=\([[:alnum:]]*\)$/\1/p'
 }
 
 get_log() {
