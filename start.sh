@@ -16,7 +16,8 @@ big_message() {
   echo
 }
 
-user=edwarli
+# Put your username here if you don't want to specify it one the command line.
+user=
 host=greatlakes.arc-ts.umich.edu
 
 start_script=start-jupyterlab.sh
